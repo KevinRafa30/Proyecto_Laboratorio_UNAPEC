@@ -77,7 +77,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'laboratorios_unapec',  
-        'USER': 'kevin',
+        'USER': 'postgres',
         'PASSWORD': 'lebron2330',    
         'HOST': 'localhost',
         'PORT': '5432',
