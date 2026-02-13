@@ -31,3 +31,8 @@ def crear_reservacion(request):
         form = ReservacionForm()
 
     return render(request, 'gestion/crear_reservacion.html', {'form': form})
+
+def lista_reservaciones(request):
+    # Traemos todas las reservas ordenadas por fecha (más reciente primero)
+    reservas = Reservacion.objects.all().order_by('-fecha_reservacion')
+    return render(request, 'gestion/lista_reservaciones.html', {'reservas': reservas})
