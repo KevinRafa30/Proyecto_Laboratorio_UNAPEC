@@ -1,0 +1,45 @@
+{% extends 'gestion/base.html' %}
+
+{% block titulo_pagina %}Gestión de Aulas y Laboratorios{% endblock %}
+
+{% block botones_accion %}
+<a href="{% url 'crear_aula' %}" class="btn btn-primary" style="text-decoration:none;">＋ Nueva Aula/Lab</a>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="border-radius:var(--radius)">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Tipo</th>
+                    <th>Edificio</th>
+                    <th>Capacidad</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in aulas_list %}
+                <tr>
+                    <td class="td-main">#A0{{ a.id }}</td>
+                    <td>{{ a.descripcion }}</td>
+                    <td><span class="chip">🔬 {{ a.tipo_aula.descripcion }}</span></td>
+                    <td>{{ a.edificio.descripcion }}</td>
+                    <td>{{ a.capacidad }} personas</td>
+                    <td>
+                        {% if a.estado == 'A' %}<span class="badge badge-active">Activo</span>
+                        {% else %}<span class="badge badge-inactive">Inactivo</span>{% endif %}
+                    </td>
+                    <td><a href="{% url 'editar_aula' a.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️ Editar</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" style="text-align: center; padding: 20px;">No hay aulas registradas.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'gestion/base.html' %}
+
+{% block titulo_pagina %}
+    {% if form.instance.id %}✏️ Editar {{ titulo }}{% else %}➕ Registrar {{ titulo }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <div class="card-header">
+        <div>
+            <div class="card-title">Datos del Registro</div>
+            <div class="card-subtitle">Complete la información solicitada</div>
+        </div>
+        <a href="{% url url_volver %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">Volver a la lista</a>
+    </div>
+    
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                    <div class="form-group full">
+                        <label class="form-label">{{ field.label }} <span>*</span></label>
+                        {{ field }}
+                        {% if field.help_text %}<span class="form-hint">{{ field.help_text }}</span>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray-100);">
+                <a href="{% url url_volver %}" class="btn btn-secondary" style="text-decoration:none;">Cancelar</a>
+                <button type="submit" class="btn btn-primary">✔ Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

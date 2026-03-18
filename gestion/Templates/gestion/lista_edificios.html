@@ -1,0 +1,41 @@
+{% extends 'gestion/base.html' %}
+
+{% block titulo_pagina %}Gestión de Edificios{% endblock %}
+
+{% block botones_accion %}
+<a href="{% url 'crear_edificio' %}" class="btn btn-primary" style="text-decoration:none;">＋ Nuevo Edificio</a>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="border-radius:var(--radius)">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Campus Perteneciente</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in edificios_list %}
+                <tr>
+                    <td class="td-main">#E0{{ e.id }}</td>
+                    <td>{{ e.descripcion }}</td>
+                    <td><span class="chip">🏫 {{ e.campus.descripcion }}</span></td>
+                    <td>
+                        {% if e.estado == 'A' %}<span class="badge badge-active">Activo</span>
+                        {% else %}<span class="badge badge-inactive">Inactivo</span>{% endif %}
+                    </td>
+                    <td><a href="{% url 'editar_edificio' e.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️ Editar</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" style="text-align: center; padding: 20px;">No hay edificios registrados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

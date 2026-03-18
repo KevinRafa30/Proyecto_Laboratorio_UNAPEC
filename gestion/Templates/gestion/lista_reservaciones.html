@@ -1,57 +1,92 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Reservaciones</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+{% extends 'gestion/base.html' %}
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary">📋 Reservaciones Activas</h2>
-        <a href="{% url 'crear_reservacion' %}" class="btn btn-success">+ Nueva Reserva</a>
-    </div>
+{% block titulo_pagina %}Reservaciones Activas{% endblock %}
 
-    <div class="card shadow">
-        <div class="card-body">
-            <table class="table table-hover table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Aula</th>
-                        <th>Solicitante</th>
-                        <th>Horas</th>
-                        <th>Atendido por</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for reserva in reservas %}
-                    <tr>
-                        <td>{{ reserva.fecha_reservacion }}</td>
-                        <td><span class="badge bg-info text-dark">{{ reserva.aula }}</span></td>
-                        <td>{{ reserva.usuario }}</td>
-                        <td>{{ reserva.cantidad_horas }} hrs</td>
-                        <td>{{ reserva.empleado }}</td>
-                        <td>
-                            {% if reserva.estado == 'A' %}
-                                <span class="badge bg-success">Activa</span>
-                            {% else %}
-                                <span class="badge bg-danger">Inactiva</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">No hay reservaciones registradas aún.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+{% block content %}
+<div class="tabs">
+    <div class="tab active">Todas</div>
+    <div class="tab">Activas</div>
+    <div class="tab">Pendientes</div>
+    <div class="tab">Canceladas</div>
 </div>
 
-</body>
-</html>
+<div class="filter-bar" style="border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--gray-200);border-bottom:none">
+    <form method="get" style="display: flex; width: 100%; gap: 10px; margin: 0;">
+        <div class="search-box" style="flex: 1;">
+            <span class="search-icon">🔍</span>
+            <input type="text" name="buscar" placeholder="Buscar por nombre de usuario o aula..." value="{{ busqueda|default:'' }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        {% if busqueda %}
+            <a href="{% url 'lista_reservaciones' %}" class="btn btn-secondary" style="text-decoration:none;">Limpiar</a>
+        {% endif %}
+        
+        <a href="{% url 'exportar_csv' %}" class="btn" style="background: var(--gold-light); color: #92400E; border: 1px solid var(--gold); margin-left: auto; text-decoration:none;">
+            📂 Exportar Excel
+        </a>
+    </form>
+</div>
+
+<div class="card" style="border-radius:0 0 var(--radius) var(--radius)">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>No. Reservación</th>
+                    <th>Usuario</th>
+                    <th>Aula / Laboratorio</th>
+                    <th>Fecha</th>
+                    <th>Horas</th>
+                    <th>Empleado</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reserva in reservas %}
+                <tr>
+                    <td class="td-main">#RES-00{{ reserva.id }}</td>
+                    <td>
+                        {{ reserva.usuario.nombre }} 
+                        <div style="font-size:11.5px;color:var(--gray-400)">
+                            {{ reserva.usuario.no_carnet }} · 
+                            {% if reserva.usuario.tipo_usuario == 'E' %}Estudiante
+                            {% elif reserva.usuario.tipo_usuario == 'P' %}Profesor
+                            {% else %}Administrativo{% endif %}
+                        </div>
+                    </td>
+                    <td><span class="chip">🖥️ {{ reserva.aula.descripcion }}</span></td>
+                    <td>{{ reserva.fecha_reservacion|date:"d/m/Y" }}</td>
+                    <td><strong>{{ reserva.cantidad_horas }}h</strong></td>
+                    <td>{{ reserva.empleado.nombre }}</td>
+                    <td>
+                        {% if reserva.estado == 'A' %}
+                            <span class="badge badge-active">Activa</span>
+                        {% else %}
+                            <span class="badge badge-inactive">Inactiva</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:5px">
+                            <a href="{% url 'editar_reservacion' reserva.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️</a>
+                            <a href="{% url 'eliminar_reservacion' reserva.id %}" class="btn btn-danger btn-sm" style="text-decoration:none;" onclick="return confirm('¿Seguro que deseas eliminar la reserva #RES-00{{ reserva.id }}?');">✕</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px; color: var(--gray-400);">
+                        <div style="font-size: 30px; margin-bottom: 10px;">📋</div>
+                        No se encontraron reservaciones registradas.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="padding:14px 22px;border-top:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:13px;color:var(--gray-400)">Total de registros: {{ reservas|length }}</span>
+    </div>
+</div>
+{% endblock %}

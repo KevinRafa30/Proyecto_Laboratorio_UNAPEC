@@ -1,0 +1,27 @@
+{% extends 'gestion/base.html' %}
+{% block titulo_pagina %}Gestión de Campus{% endblock %}
+{% block botones_accion %}<a href="{% url 'crear_campus' %}" class="btn btn-primary" style="text-decoration:none;">＋ Nuevo Campus</a>{% endblock %}
+{% block content %}
+<div class="card" style="border-radius:var(--radius)">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>ID</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody>
+                {% for c in campus_list %}
+                <tr>
+                    <td class="td-main">#C0{{ c.id }}</td>
+                    <td>{{ c.descripcion }}</td>
+                    <td>
+                        {% if c.estado == 'A' %}<span class="badge badge-active">Activo</span>
+                        {% else %}<span class="badge badge-inactive">Inactivo</span>{% endif %}
+                    </td>
+                    <td><a href="{% url 'editar_campus' c.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️ Editar</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="text-align: center; padding: 20px;">No hay campus registrados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

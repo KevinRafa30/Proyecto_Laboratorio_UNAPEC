@@ -1,65 +1,67 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Reservar Laboratorio</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+{% extends 'gestion/base.html' %}
 
-<div class="container mt-5">
-    <div class="card shadow-lg">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">📅 Nueva Reservación</h3>
+{% block titulo_pagina %}
+    {% if form.instance.id %}✏️ Editar Reservación #RES-00{{ form.instance.id }}{% else %}📅 Nueva Reservación{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 850px; margin: 0 auto;">
+    <div class="card-header">
+        <div>
+            <div class="card-title">Detalles de la Reservación</div>
+            <div class="card-subtitle">Completa los campos para registrar o modificar la reserva en el sistema.</div>
         </div>
-        <div class="card-body">
+        <a href="{% url 'lista_reservaciones' %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">Volver a la lista</a>
+    </div>
+    
+    <div class="card-body">
+        <div class="alert alert-info">
+            ℹ️ <span>Verifica la disponibilidad del aula antes de registrar. El sistema validará automáticamente conflictos de horario para evitar choques.</span>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
             
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Usuario Solicitante <span>*</span></label>
+                    {{ form.usuario }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Aula / Laboratorio <span>*</span></label>
+                    {{ form.aula }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Fecha de reservación <span>*</span></label>
+                    {{ form.fecha_reservacion }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Cantidad de horas <span>*</span></label>
+                    {{ form.cantidad_horas }}
+                    <span class="form-hint">Máximo 8 horas por reservación</span>
+                </div>
+                
+                <div class="form-group full">
+                    <label class="form-label">Empleado responsable <span>*</span></label>
+                    {{ form.empleado }}
+                </div>
 
-            <form method="post">
-                {% csrf_token %}
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Usuario (Estudiante/Profesor)</label>
-                        {{ form.usuario }}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Aula Solicitada</label>
-                        {{ form.aula }}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Fecha</label>
-                        {{ form.fecha_reservacion }}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Horas</label>
-                        {{ form.cantidad_horas }}
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label">Empleado que atiende</label>
-                        {{ form.empleado }}
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label">Comentario</label>
-                        {{ form.comentario }}
-                    </div>
+                <div class="form-group full">
+                    <label class="form-label">Comentario adicional</label>
+                    {{ form.comentario }}
                 </div>
-                <div class="mt-4 d-grid gap-2">
-                    <button type="submit" class="btn btn-success btn-lg">Confirmar Reservación</button>
-                    <a href="/admin" class="btn btn-outline-secondary">Volver al Admin</a>
-                </div>
-            </form>
-        </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray-100);">
+                <a href="{% url 'lista_reservaciones' %}" class="btn btn-secondary" style="text-decoration:none;">Cancelar</a>
+                <button type="submit" class="btn btn-primary">
+                    {% if form.instance.id %}✔ Guardar Cambios{% else %}✔ Registrar Reservación{% endif %}
+                </button>
+            </div>
+        </form>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}
