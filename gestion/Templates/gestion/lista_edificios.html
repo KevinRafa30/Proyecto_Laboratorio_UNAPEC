@@ -29,8 +29,14 @@
                         {% if e.estado == 'A' %}<span class="badge badge-active">Activo</span>
                         {% else %}<span class="badge badge-inactive">Inactivo</span>{% endif %}
                     </td>
-                    <td><a href="{% url 'editar_edificio' e.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️ Editar</a></td>
-                </tr>
+                    
+                    <td>
+                        <div style="display:flex; gap:5px;">
+                            <a href="{% url 'editar_edificio' e.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️ Editar</a>
+                            <a href="{% url 'eliminar_edificio' e.id %}" class="btn btn-danger btn-sm" style="text-decoration:none;" onclick="return confirm('¿Seguro que deseas eliminar este Edificio?');">✕</a>
+                        </div>
+                    </td>
+                    </tr>
                 {% empty %}
                 <tr><td colspan="5" style="text-align: center; padding: 20px;">No hay edificios registrados.</td></tr>
                 {% endfor %}

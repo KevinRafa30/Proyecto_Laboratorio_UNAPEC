@@ -1,0 +1,36 @@
+{% extends 'gestion/base.html' %}
+
+{% block titulo_pagina %}
+    {% if form.instance.pk %}Editar Usuario{% else %}Nuevo Usuario{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto; border-radius: var(--radius);">
+    <div class="card-header">
+        <div class="card-title">Datos del Usuario</div>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div style="display: grid; gap: 15px;">
+                {% for field in form %}
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: var(--gray-700);">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div style="color: #dc2626; font-size: 12px; margin-top: 5px;">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary" style="text-decoration:none;">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

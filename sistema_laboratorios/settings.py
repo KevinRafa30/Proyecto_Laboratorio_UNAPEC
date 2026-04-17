@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-f(om4v6v!1b!@(*jqz$^9b@pcc*wkos+4pb(0-61jr^_)5vf6l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -120,3 +120,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# --- CONFIGURACIÓN DE LOGIN ---
+LOGIN_REDIRECT_URL = 'dashboard'  # Asegúrate de que así se llama tu ruta en urls.py
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'

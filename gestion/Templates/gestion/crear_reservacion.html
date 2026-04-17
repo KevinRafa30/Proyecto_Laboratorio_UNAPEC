@@ -9,15 +9,20 @@
     <div class="card-header">
         <div>
             <div class="card-title">Detalles de la Reservación</div>
-            <div class="card-subtitle">Completa los campos para registrar o modificar la reserva en el sistema.</div>
+            <div class="card-subtitle">Completa los campos para procesar la reserva en el sistema.</div>
         </div>
         <a href="{% url 'lista_reservaciones' %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">Volver a la lista</a>
     </div>
     
     <div class="card-body">
-        <div class="alert alert-info">
-            ℹ️ <span>Verifica la disponibilidad del aula antes de registrar. El sistema validará automáticamente conflictos de horario para evitar choques.</span>
+        {% if form.errors %}
+        <div class="alert alert-danger" style="background: var(--red-light); color: var(--red); border-left: 3px solid var(--red); padding: 12px; margin-bottom: 20px; border-radius: 8px;">
+            <strong>⚠️ Por favor corrige los siguientes errores:</strong>
+            <ul style="margin-top: 5px; font-size: 13px;">
+                {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+            </ul>
         </div>
+        {% endif %}
 
         <form method="POST">
             {% csrf_token %}
@@ -37,14 +42,18 @@
                     <label class="form-label">Fecha de reservación <span>*</span></label>
                     {{ form.fecha_reservacion }}
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">Estado de la reserva <span>*</span></label>
+                    {{ form.estado }}
+                </div>
                 
                 <div class="form-group">
                     <label class="form-label">Cantidad de horas <span>*</span></label>
                     {{ form.cantidad_horas }}
-                    <span class="form-hint">Máximo 8 horas por reservación</span>
                 </div>
                 
-                <div class="form-group full">
+                <div class="form-group">
                     <label class="form-label">Empleado responsable <span>*</span></label>
                     {{ form.empleado }}
                 </div>

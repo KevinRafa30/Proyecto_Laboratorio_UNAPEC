@@ -60,9 +60,10 @@
         </div>
         <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <a href="{% url 'crear_reservacion' %}" class="btn btn-secondary text-center">📅 Reservar</a>
-            <a href="/admin/gestion/usuario/" class="btn btn-secondary text-center">👤 Usuarios</a>
-            <a href="/admin/gestion/aula/" class="btn btn-secondary text-center">🔬 Labs</a>
+            <a href="{% url 'lista_aulas' %}" class="btn btn-secondary text-center">🔬 Labs</a>
             <a href="{% url 'lista_reservaciones' %}" class="btn btn-secondary text-center">📋 Lista</a>
+            <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary text-center" style="text-decoration:none;">👤 Usuarios</a>
+        <a href="{% url 'lista_empleados' %}" class="btn btn-secondary text-center" style="text-decoration:none;">👔 Empleados</a>
         </div>
     </div>
 </div>

@@ -1,11 +1,23 @@
 {% extends 'gestion/base.html' %}
+
 {% block titulo_pagina %}Gestión de Campus{% endblock %}
-{% block botones_accion %}<a href="{% url 'crear_campus' %}" class="btn btn-primary" style="text-decoration:none;">＋ Nuevo Campus</a>{% endblock %}
+
+{% block botones_accion %}
+<a href="{% url 'crear_campus' %}" class="btn btn-primary" style="text-decoration:none;">＋ Nuevo Campus</a>
+{% endblock %}
+
 {% block content %}
 <div class="card" style="border-radius:var(--radius)">
     <div class="table-wrap">
         <table>
-            <thead><tr><th>ID</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
             <tbody>
                 {% for c in campus_list %}
                 <tr>
@@ -15,8 +27,14 @@
                         {% if c.estado == 'A' %}<span class="badge badge-active">Activo</span>
                         {% else %}<span class="badge badge-inactive">Inactivo</span>{% endif %}
                     </td>
-                    <td><a href="{% url 'editar_campus' c.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️ Editar</a></td>
-                </tr>
+                    
+                    <td>
+                        <div style="display:flex; gap:5px;">
+                            <a href="{% url 'editar_campus' c.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️ Editar</a>
+                            <a href="{% url 'eliminar_campus' c.id %}" class="btn btn-danger btn-sm" style="text-decoration:none;" onclick="return confirm('¿Seguro que deseas eliminar este Campus?');">✕</a>
+                        </div>
+                    </td>
+                    </tr>
                 {% empty %}
                 <tr><td colspan="4" style="text-align: center; padding: 20px;">No hay campus registrados.</td></tr>
                 {% endfor %}

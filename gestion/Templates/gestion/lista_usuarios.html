@@ -1,0 +1,52 @@
+{% extends 'gestion/base.html' %}
+
+{% block titulo_pagina %}Gestión de Usuarios{% endblock %}
+
+{% block botones_accion %}
+<a href="{% url 'crear_usuario' %}" class="btn btn-primary" style="text-decoration:none;">＋ Nuevo Usuario</a>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="border-radius:var(--radius)">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Matrícula / Carnet</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios_list %}
+                <tr>
+                    <td class="td-main">{{ u.no_carnet }}</td>
+                    <td>{{ u.nombre }}</td>
+                    <td>
+                        {% if u.tipo_usuario == 'E' %}Estudiante
+                        {% elif u.tipo_usuario == 'P' %}Profesor
+                        {% else %}Administrativo{% endif %}
+                    </td>
+                    <td>
+                        {% if u.estado == 'A' %}<span class="badge badge-active">Activo</span>
+                        {% else %}<span class="badge badge-inactive">Inactivo</span>{% endif %}
+                    </td>
+                    <td>
+                        <div style="display:flex; gap:5px;">
+                            <a href="{% url 'editar_usuario' u.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️</a>
+                            {% if u.estado == 'A' %}
+                            <a href="{% url 'eliminar_usuario' u.id %}" class="btn btn-danger btn-sm" style="text-decoration:none;" onclick="return confirm('¿Seguro que deseas desactivar este usuario? No podrá realizar más reservas.');">✕</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" style="text-align: center; padding: 20px;">No hay usuarios registrados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

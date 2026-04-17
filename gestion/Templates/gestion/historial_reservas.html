@@ -1,0 +1,50 @@
+{% extends 'gestion/base.html' %}
+
+{% block titulo_pagina %}Historial y Archivo{% endblock %}
+
+{% block content %}
+<div class="card" style="border-radius:var(--radius)">
+    <div class="card-header">
+        <div class="card-title">Registros Archivados</div>
+        <div class="card-subtitle">Listado de sesiones finalizadas y cancelaciones históricas.</div>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Aula / Laboratorio</th>
+                    <th>Fecha</th>
+                    <th>Estado Final</th>
+                    <th>Comentario</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in historial %}
+                <tr>
+                    <td class="td-main">#RES-00{{ res.id }}</td>
+                    <td>{{ res.usuario.nombre }}</td>
+                    <td><span class="chip">🖥️ {{ res.aula.descripcion }}</span></td>
+                    <td>{{ res.fecha_reservacion|date:"d/m/Y" }}</td>
+                    <td>
+    {% if res.estado == 'C' %}
+        <span class="badge" style="background: #fee2e2; color: #991b1b; border: 1px solid #fecaca;">Cancelada</span>
+    {% else %}
+        <span class="badge" style="background: #f3f4f6; color: #374151; border: 1px solid #d1d5db;">Finalizada</span>
+    {% endif %}
+</td>
+                    <td style="font-size: 12px; color: var(--gray-400);">{{ res.comentario|default:"---" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--gray-400);">
+                        No hay registros en el archivo.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

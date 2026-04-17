@@ -1,24 +1,30 @@
 {% extends 'gestion/base.html' %}
 
-{% block titulo_pagina %}Reservaciones Activas{% endblock %}
+{% block titulo_pagina %}Reservaciones{% endblock %}
 
 {% block content %}
 <div class="tabs">
-    <div class="tab active">Todas</div>
-    <div class="tab">Activas</div>
-    <div class="tab">Pendientes</div>
-    <div class="tab">Canceladas</div>
+    <a href="?estado=todas{% if busqueda %}&buscar={{ busqueda }}{% endif %}" class="tab {% if estado_filtro == 'todas' %}active{% endif %}" style="text-decoration:none;">Todas</a>
+    
+    <a href="?estado=A{% if busqueda %}&buscar={{ busqueda }}{% endif %}" class="tab {% if estado_filtro == 'A' %}active{% endif %}" style="text-decoration:none;">Activas</a>
+    
+    <a href="?estado=P{% if busqueda %}&buscar={{ busqueda }}{% endif %}" class="tab {% if estado_filtro == 'P' %}active{% endif %}" style="text-decoration:none;">Pendientes</a>
+    
 </div>
 
 <div class="filter-bar" style="border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--gray-200);border-bottom:none">
     <form method="get" style="display: flex; width: 100%; gap: 10px; margin: 0;">
+        
+        <input type="hidden" name="estado" value="{{ estado_filtro }}">
+        
         <div class="search-box" style="flex: 1;">
             <span class="search-icon">🔍</span>
             <input type="text" name="buscar" placeholder="Buscar por nombre de usuario o aula..." value="{{ busqueda|default:'' }}">
         </div>
         <button type="submit" class="btn btn-primary">Buscar</button>
+        
         {% if busqueda %}
-            <a href="{% url 'lista_reservaciones' %}" class="btn btn-secondary" style="text-decoration:none;">Limpiar</a>
+            <a href="?estado={{ estado_filtro }}" class="btn btn-secondary" style="text-decoration:none;">Limpiar</a>
         {% endif %}
         
         <a href="{% url 'exportar_csv' %}" class="btn" style="background: var(--gold-light); color: #92400E; border: 1px solid var(--gold); margin-left: auto; text-decoration:none;">
@@ -62,22 +68,45 @@
                     <td>
                         {% if reserva.estado == 'A' %}
                             <span class="badge badge-active">Activa</span>
+                        {% elif reserva.estado == 'P' %}
+                            <span class="badge badge-pending">Pendiente</span>
+                        {% elif reserva.estado == 'C' %}
+                            <span class="badge badge-canceled">Cancelada</span>
                         {% else %}
                             <span class="badge badge-inactive">Inactiva</span>
                         {% endif %}
                     </td>
-                    <td>
-                        <div style="display:flex;gap:5px">
-                            <a href="{% url 'editar_reservacion' reserva.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️</a>
-                            <a href="{% url 'eliminar_reservacion' reserva.id %}" class="btn btn-danger btn-sm" style="text-decoration:none;" onclick="return confirm('¿Seguro que deseas eliminar la reserva #RES-00{{ reserva.id }}?');">✕</a>
-                        </div>
-                    </td>
+<td>
+    <div style="display:flex; gap:5px; align-items: center;">
+        {% if reserva.estado == 'P' %}
+            <a href="{% url 'check_in_reserva' reserva.id %}" 
+               class="btn btn-success btn-sm" 
+               style="text-decoration:none; padding: 5px 8px;" 
+               title="Confirmar llegada (Check-in)">
+               ✔ Entrada
+            </a>
+        {% endif %}
+
+        {% if reserva.estado == 'A' %}
+            <a href="{% url 'finalizar_reserva' reserva.id %}" class="btn btn-danger btn-sm" style="text-decoration:none; background-color: #6366f1; border-color: #6366f1;">
+                 Finalizar
+            </a>
+        {% endif %}
+
+        <a href="{% url 'editar_reservacion' reserva.id %}" class="btn btn-secondary btn-sm" style="text-decoration:none;">✏️</a>
+        
+        <a href="{% url 'eliminar_reservacion' reserva.id %}" 
+           class="btn btn-danger btn-sm" 
+           style="text-decoration:none;" 
+           onclick="return confirm('¿Seguro que deseas eliminar esta reserva?');">✕</a>
+    </div>
+</td>
                 </tr>
                 {% empty %}
                 <tr>
                     <td colspan="8" style="text-align: center; padding: 40px; color: var(--gray-400);">
                         <div style="font-size: 30px; margin-bottom: 10px;">📋</div>
-                        No se encontraron reservaciones registradas.
+                        No se encontraron reservaciones para este filtro.
                     </td>
                 </tr>
                 {% endfor %}

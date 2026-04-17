@@ -1,17 +1,20 @@
 from django import forms
-from .models import Reservacion, Campus, Edificio, TipoAula, Aula
+from .models import Reservacion, Campus, Edificio, TipoAula, Aula, Usuario, Empleado
 
 class ReservacionForm(forms.ModelForm):
     class Meta:
         model = Reservacion
-        fields = ['usuario', 'aula', 'fecha_reservacion', 'cantidad_horas', 'empleado', 'comentario']
+        # Agregamos 'estado' a la lista de campos
+        fields = ['usuario', 'aula', 'fecha_reservacion', 'cantidad_horas', 'empleado', 'estado', 'comentario']
         widgets = {
             'fecha_reservacion': forms.DateInput(attrs={'type': 'date', 'class': 'form-input'}),
             'usuario': forms.Select(attrs={'class': 'form-select'}),
             'aula': forms.Select(attrs={'class': 'form-select'}),
             'empleado': forms.Select(attrs={'class': 'form-select'}),
+            # Estilizamos el nuevo campo de estado
+            'estado': forms.Select(attrs={'class': 'form-select'}),
             'cantidad_horas': forms.NumberInput(attrs={'class': 'form-input', 'min': 1, 'max': 8, 'placeholder': 'Ej: 2'}),
-            'comentario': forms.Textarea(attrs={'class': 'form-textarea', 'rows': 3, 'placeholder': 'Motivo o detalles adicionales de la reservación...'}),
+            'comentario': forms.Textarea(attrs={'class': 'form-textarea', 'rows': 3, 'placeholder': 'Motivo o detalles...'}),
         }
 
 # --- FORMULARIOS DE MANTENIMIENTO ---
@@ -53,5 +56,30 @@ class AulaForm(forms.ModelForm):
             'edificio': forms.Select(attrs={'class': 'form-select'}),
             'capacidad': forms.NumberInput(attrs={'class': 'form-input', 'min': 1}),
             'cupos_reservados': forms.NumberInput(attrs={'class': 'form-input', 'min': 0}),
+            'estado': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+class UsuarioForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        # Incluimos el campo 'estado' que creamos recientemente
+        fields = ['nombre', 'no_carnet', 'tipo_usuario', 'estado'] 
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Ej: Kevin Lantigua'}),
+            'no_carnet': forms.TextInput(attrs={'class': 'form-input'}),
+            'tipo_usuario': forms.Select(attrs={'class': 'form-select'}),
+            'estado': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+class EmpleadoForm(forms.ModelForm):
+    class Meta:
+        model = Empleado
+        fields = ['nombre', 'cedula', 'tanda_labor', 'fecha_ingreso', 'estado'] 
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-input'}),
+            'cedula': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Ej: 402...'}),
+            'tanda_labor': forms.Select(attrs={'class': 'form-select'}),
+            # Importante: para la fecha usamos el type date para que salga el calendario
+            'fecha_ingreso': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
             'estado': forms.Select(attrs={'class': 'form-select'}),
         }
